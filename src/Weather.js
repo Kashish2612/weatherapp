@@ -24,7 +24,6 @@ import {
   Water,
   Compress,
   WbSunny,
-  NightsStay,
   ArrowUpward,
   Search
 } from "@mui/icons-material";
@@ -32,12 +31,8 @@ import {
 // Custom theme
 const theme = createTheme({
   palette: {
-    primary: {
-      main: "#3f51b5",
-    },
-    secondary: {
-      main: "#f50057",
-    },
+    primary: { main: "#3f51b5" },
+    secondary: { main: "#f50057" },
   },
   typography: {
     fontFamily: "'Poppins', sans-serif",
@@ -51,17 +46,31 @@ function WeatherApp() {
   const [error, setError] = React.useState(null);
   const isMobile = useMediaQuery("(max-width:600px)");
 
+  // ✅ Added function to fix the error
+  const updateBackground = (condition) => {
+    const lower = condition.toLowerCase();
+    if (lower.includes("sunny")) {
+      document.body.style.background = "#fff9c4";
+    } else if (lower.includes("rain")) {
+      document.body.style.background = "#cfd8dc";
+    } else if (lower.includes("cloud")) {
+      document.body.style.background = "#eceff1";
+    } else {
+      document.body.style.background = "#a1c4fd";
+    }
+  };
+
   const fetchWeather = async (e) => {
     e?.preventDefault();
     if (!city.trim()) {
       setError("Please enter a city name");
       return;
     }
-    
+
     setError(null);
     setLoading(true);
-    
-   try {
+
+    try {
       const apiKey = "5f114b623b2c42d49c3102625230807";
       const response = await axios.get(
         `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&aqi=no&alerts=no`
@@ -70,7 +79,6 @@ function WeatherApp() {
       updateBackground(response.data.current.condition.text);
     } catch (err) {
       setError("Failed to fetch weather data. Please try another location.");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -78,13 +86,13 @@ function WeatherApp() {
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
-    const options = { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
@@ -98,7 +106,7 @@ function WeatherApp() {
           padding: isMobile ? 2 : 4,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <Container maxWidth="sm" sx={{ mb: 4 }}>
@@ -107,7 +115,7 @@ function WeatherApp() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              mb: 4
+              mb: 4,
             }}
           >
             <Typography
@@ -119,7 +127,7 @@ function WeatherApp() {
                 color: "primary.dark",
                 display: "flex",
                 alignItems: "center",
-                gap: 1
+                gap: 1,
               }}
             >
               Weather Forecast <Cloud sx={{ fontSize: 40 }} />
@@ -137,7 +145,7 @@ function WeatherApp() {
               flexDirection: isMobile ? "column" : "row",
               gap: 2,
               mb: 4,
-              width: "100%"
+              width: "100%",
             }}
           >
             <TextField
@@ -151,8 +159,8 @@ function WeatherApp() {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "50px",
-                  backgroundColor: "rgba(255, 255, 255, 0.9)"
-                }
+                  backgroundColor: "rgba(255, 255, 255, 0.9)",
+                },
               }}
             />
             <Button
@@ -163,7 +171,7 @@ function WeatherApp() {
               sx={{
                 borderRadius: "50px",
                 padding: isMobile ? "12px" : "12px 24px",
-                minWidth: isMobile ? "100%" : "auto"
+                minWidth: isMobile ? "100%" : "auto",
               }}
               startIcon={<Search />}
             >
@@ -177,7 +185,7 @@ function WeatherApp() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "300px"
+                height: "300px",
               }}
             >
               <CircularProgress size={60} />
@@ -189,11 +197,10 @@ function WeatherApp() {
                 boxShadow: 3,
                 background: "rgba(255, 255, 255, 0.85)",
                 backdropFilter: "blur(8px)",
-                overflow: "hidden"
+                overflow: "hidden",
               }}
             >
               <CardContent sx={{ p: isMobile ? 2 : 4 }}>
-                {/* Location and Date */}
                 <Box sx={{ mb: 3 }}>
                   <Typography
                     variant="h5"
@@ -203,7 +210,7 @@ function WeatherApp() {
                       display: "flex",
                       alignItems: "center",
                       gap: 1,
-                      mb: 1
+                      mb: 1,
                     }}
                   >
                     <LocationCity color="primary" />
@@ -216,7 +223,6 @@ function WeatherApp() {
 
                 <Divider sx={{ my: 2 }} />
 
-                {/* Main Weather Info */}
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <Box
@@ -225,14 +231,14 @@ function WeatherApp() {
                         flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "center",
-                        height: "100%"
+                        height: "100%",
                       }}
                     >
                       <Box
                         sx={{
                           display: "flex",
                           alignItems: "center",
-                          mb: 1
+                          mb: 1,
                         }}
                       >
                         <Typography
@@ -260,7 +266,6 @@ function WeatherApp() {
 
                   <Grid item xs={12} sm={6}>
                     <Grid container spacing={2}>
-                      {/* Weather Details */}
                       <Grid item xs={6}>
                         <WeatherDetail
                           icon={<Thermostat />}
@@ -320,7 +325,7 @@ function WeatherApp() {
                 p: 4,
                 textAlign: "center",
                 background: "rgba(255, 255, 255, 0.7)",
-                borderRadius: 4
+                borderRadius: 4,
               }}
             >
               <Typography variant="h6" gutterBottom>
@@ -337,7 +342,7 @@ function WeatherApp() {
   );
 }
 
-// Reusable Weather Detail Component
+// ✅ Reusable weather detail UI
 function WeatherDetail({ icon, title, value, color }) {
   return (
     <Box
@@ -348,7 +353,7 @@ function WeatherDetail({ icon, title, value, color }) {
         p: 2,
         borderRadius: 2,
         bgcolor: "rgba(0, 0, 0, 0.02)",
-        height: "100%"
+        height: "100%",
       }}
     >
       <Box
@@ -356,7 +361,7 @@ function WeatherDetail({ icon, title, value, color }) {
           display: "flex",
           alignItems: "center",
           gap: 1,
-          mb: 1
+          mb: 1,
         }}
       >
         {React.cloneElement(icon, { sx: { color } })}
